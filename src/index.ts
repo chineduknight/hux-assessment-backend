@@ -2,8 +2,11 @@ import express from "express";
 import dotenv from "dotenv";
 import { router as userRoutes } from "./routes/userRoutes";
 import "colors";
+import { connectDB } from "./utils/db";
 
 dotenv.config();
+
+connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
