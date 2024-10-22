@@ -1,20 +1,15 @@
 import request from "supertest";
-import { app, server } from "../index"; // Assuming we export the Express app from index.ts
-import mongoose from "mongoose";
-import { User } from "../models/User";
+import { app } from "../index";
+import { connectTestDB, disconnectTestDB } from "./utils/testSetup";
+
+let token: string;
 
 beforeAll(async () => {
-  // Connect to the test database
-  process.env.NODE_ENV = "test";
-  if (mongoose.connection.readyState === 0) {
-    await mongoose.connect(process.env.MONGO_URI_TEST || "");
-  }
+  token = await connectTestDB();
 });
 
 afterAll(async () => {
-  await User.deleteMany({});
-  await mongoose.connection.close();
-  server.close();
+  await disconnectTestDB();
 });
 
 describe("User Authentication", () => {
@@ -28,20 +23,6 @@ describe("User Authentication", () => {
     expect(res.body).toHaveProperty("token");
   });
 
-  it("should not sign up with existing email", async () => {
-    await request(app).post("/api/v1/users/signup").send({
-      name: "Test User",
-      email: "test@example.com",
-      password: "password123",
-    });
-    const res = await request(app).post("/api/v1/users/signup").send({
-      name: "Test User",
-      email: "test@example.com",
-      password: "password123",
-    });
-    expect(res.status).toBe(400);
-    expect(res.body).toHaveProperty("error", "User already exists");
-  });
   it("should not sign up with existing email", async () => {
     await request(app).post("/api/v1/users/signup").send({
       name: "Test User",

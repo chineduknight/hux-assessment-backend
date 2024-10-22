@@ -1,33 +1,15 @@
 import request from "supertest";
-import { app, server } from "../index";
-import mongoose from "mongoose";
-import jwt from "jsonwebtoken";
-import { User } from "../models/User";
+import { app } from "../index";
+import { connectTestDB, disconnectTestDB } from "./utils/testSetup";
 
 let token: string;
 
 beforeAll(async () => {
-  process.env.NODE_ENV = "test";
-  if (mongoose.connection.readyState === 0) {
-    await mongoose.connect(process.env.MONGO_URI_TEST || "");
-  }
-
-  // Create a test user and generate a token
-  const user = await User.create({
-    name: "Test User",
-    email: "testuser@example.com",
-    password: "password123",
-  });
-
-  token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || "", {
-    expiresIn: "1d",
-  });
+  token = await connectTestDB();
 });
 
 afterAll(async () => {
-  await User.deleteMany({});
-  await mongoose.connection.close();
-  server.close();
+  await disconnectTestDB();
 });
 
 describe("Authentication Middleware", () => {

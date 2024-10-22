@@ -34,9 +34,10 @@ app.use("/api/v1", router);
 app.use(errorHandler); // Global error handler
 
 const server = app.listen(PORT, () => {
-  console.log(
-    `⚡️[server]: Server running in ${process.env.NODE_ENV} mode on port ${PORT} visit http://localhost:${PORT}`
-      .yellow.bold
-  );
+  if (process.env.NODE_ENV !== "test")
+    console.log(
+      `⚡️[server]: Server running in ${process.env.NODE_ENV} mode on port ${PORT} visit http://localhost:${PORT}`
+        .yellow.bold
+    );
 });
 export { app, server }; // Export the app for testing
