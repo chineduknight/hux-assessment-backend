@@ -1,8 +1,14 @@
+import { login, signup } from "@controllers/userController";
+import {
+  validateSignup,
+  validationHandler,
+  validateLogin,
+} from "@middleware/validators/userValidator";
 import express from "express";
 
-export const router = express.Router();
+const router = express.Router();
 
-// Sample route
-router.get("/", (req, res) => {
-  res.send("User route placeholder");
-});
+router.post("/signup", validateSignup, validationHandler, signup);
+router.post("/login", validateLogin, validationHandler, login);
+
+export default router;
