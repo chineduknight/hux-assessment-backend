@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import { router as userRoutes } from "./routes/userRoutes";
 import "colors";
 
 dotenv.config();
@@ -12,6 +13,9 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
+
+// Mount routes
+app.use("/api/users", userRoutes);
 
 app.listen(PORT, () => {
   console.log(
