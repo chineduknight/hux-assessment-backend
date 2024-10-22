@@ -55,6 +55,17 @@ describe("User Authentication", () => {
     expect(res.status).toBe(401);
     expect(res.body).toHaveProperty("error", "Invalid credentials");
   });
+  it("should not login with empty fields", async () => {
+    const res = await request(app).post("/api/v1/users/login").send({
+      email: "",
+      password: "",
+    });
+
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("error");
+    expect(res.body.error).toContain("Please include a valid email");
+    expect(res.body.error).toContain("Password is required");
+  });
   it("should not log in without required fields", async () => {
     const res = await request(app).post("/api/v1/users/login").send({
       email: "invalid-email",
