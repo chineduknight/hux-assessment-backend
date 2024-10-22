@@ -1,4 +1,8 @@
 {
+  "name": "contact_keeper_backend",
+  "description": "Backend for contact keeper app to help organize your contacts",
+  "version": "1.0.0",
+  "license": "MIT",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
