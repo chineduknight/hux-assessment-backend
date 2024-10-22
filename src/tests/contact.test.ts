@@ -1,7 +1,7 @@
 import request from "supertest";
 import { app } from "../index";
 import { connectTestDB, disconnectTestDB } from "./utils/testSetup";
-import { User } from "@models/User";
+import { User } from "../models/User";
 import jwt from "jsonwebtoken";
 
 let token: string;
@@ -111,6 +111,17 @@ describe("Contact CRUD Operations", () => {
     expect(res.body.data.firstName).toBe("John");
     expect(res.body.data.email).toBe("john.doe@example.com");
   });
+  it("should return 404 when contact ID does not exist", async () => {
+    const nonExistentId = "507f1f77bcf86cd799439011";
+
+    const res = await request(app)
+      .get(`/api/v1/contacts/${nonExistentId}`)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.status).toBe(404);
+    expect(res.body).toHaveProperty("error");
+    expect(res.body.error).toBe("Contact not found");
+  });
 
   it("should update a contact", async () => {
     const res = await request(app)
@@ -149,7 +160,7 @@ describe("Contact CRUD Operations", () => {
     expect(res.status).toBe(401);
     expect(res.body).toHaveProperty(
       "error",
-      "Not authorized to update this contact"
+      "Not authorized to access this contact"
     );
   });
   it("should not delete a contact if user is not the owner", async () => {
@@ -160,7 +171,7 @@ describe("Contact CRUD Operations", () => {
     expect(res.status).toBe(401);
     expect(res.body).toHaveProperty(
       "error",
-      "Not authorized to delete this contact"
+      "Not authorized to access this contact"
     );
   });
   it("should delete a contact", async () => {

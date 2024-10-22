@@ -1,10 +1,10 @@
-import { login, signup } from "@controllers/userController";
-import { protect } from "@middleware/authMiddleware";
+import { login, signup } from "../controllers/userController";
+import { protect } from "../middleware/authMiddleware";
 import {
   validateSignup,
   validationHandler,
   validateLogin,
-} from "@middleware/validators/userValidator";
+} from "../middleware/validators/userValidator";
 import express from "express";
 
 const router = express.Router();

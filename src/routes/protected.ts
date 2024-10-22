@@ -1,4 +1,4 @@
-import { protect } from "@middleware/authMiddleware";
+import { protect } from "../middleware/authMiddleware";
 import express from "express";
 
 const router = express.Router();

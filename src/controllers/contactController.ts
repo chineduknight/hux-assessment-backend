@@ -47,18 +47,7 @@ export const getContact = asyncHandler(
 // Update a contact by ID
 export const updateContact = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const contact = await Contact.findById(req.params.id);
-
-    if (!contact) {
-      return next(new ErrorResponse("Contact not found", 404));
-    }
-
-    if (contact.user.toString() !== req.user?.id) {
-      return next(
-        new ErrorResponse("Not authorized to update this contact", 401)
-      );
-    }
-
+    const contact = await checkOwnership(req, req.params.id);
     contact.set(req.body);
     const updatedContact = await contact.save();
 
@@ -69,20 +58,23 @@ export const updateContact = asyncHandler(
 // Delete a contact by ID
 export const deleteContact = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const contact = await Contact.findById(req.params.id);
-
-    if (!contact) {
-      return next(new ErrorResponse("Contact not found", 404));
-    }
-
-    if (contact.user.toString() !== req.user?.id) {
-      return next(
-        new ErrorResponse("Not authorized to delete this contact", 401)
-      );
-    }
+    const contact = await checkOwnership(req, req.params.id);
 
     await contact.deleteOne();
 
     res.status(200).json({ message: "Contact deleted successfully" });
   }
 );
+
+const checkOwnership = async (req: Request, contactId: string) => {
+  const contact = await Contact.findById(contactId);
+  if (!contact) {
+    throw new ErrorResponse("Contact not found", 404);
+  }
+
+  if (contact.user.toString() !== req.user?.id) {
+    throw new ErrorResponse("Not authorized to access this contact", 401);
+  }
+
+  return contact;
+};
