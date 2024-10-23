@@ -93,6 +93,8 @@ This is the backend service for the Contact Keeper application, built with **Nod
 
 - **Postman Collection**: Import the Postman collection to explore and test the available API endpoints.
 
+- url: [Postman Link](https://documenter.getpostman.com/view/7896202/2sAY4rE4t7)
+
 ## Development Steps
 
 ### Backend Steps (Test-Driven Development TDD)
