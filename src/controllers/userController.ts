@@ -18,8 +18,7 @@ export const signup = asyncHandler(
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({ name, email, password: hashedPassword });
 
-    const token = generateToken(user._id as string);
-    res.status(201).json({ token });
+    res.status(201).json(generateUserResponse(user));
   }
 );
 
@@ -38,8 +37,7 @@ export const login = asyncHandler(
       return next(new ErrorResponse("Invalid credentials", 401));
     }
 
-    const token = generateToken(user._id as string);
-    res.status(200).json({ token });
+    res.status(200).json(generateUserResponse(user));
   }
 );
 
@@ -48,4 +46,16 @@ const generateToken = (id: string) => {
   return jwt.sign({ id }, process.env.JWT_SECRET || "", {
     expiresIn: "1d",
   });
+};
+
+const generateUserResponse = (user: InstanceType<typeof User>) => {
+  const token = generateToken(user._id as string);
+  return {
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+    },
+    token,
+  };
 };

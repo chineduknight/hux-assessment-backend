@@ -45,6 +45,7 @@ const limiter = rateLimit({
 app.use(limiter);
 
 const whitelist = [process.env.REACT_APP_URL];
+console.log("process.env.REACT_APP_URL:", process.env.REACT_APP_URL);
 
 // CORS: Allow any origin from localhost for development purposes
 app.use(
